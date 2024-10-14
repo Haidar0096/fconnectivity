@@ -5,8 +5,21 @@ void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  @override
+  void initState() {
+    super.initState();
+    InternetAccessChecker.instance.setInternetAccessCheckInterval(
+      const Duration(seconds: 5),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +30,10 @@ class MainApp extends StatelessWidget {
           children: [
             InternetAccessConsumer(
               onInternetAccessGained: (BuildContext context) => debugPrint(
-                'Internet access gained (logged from InternetAccessConsumer)',
+                'Internet access gained (logged by InternetAccessConsumer)',
               ),
               onInternetAccessLost: (BuildContext context) => debugPrint(
-                'Internet access lost (logged from InternetAccessConsumer)',
+                'Internet access lost (logged by InternetAccessConsumer)',
               ),
               builder: ({
                 required BuildContext context,
@@ -34,10 +47,10 @@ class MainApp extends StatelessWidget {
             const SizedBox(height: 20),
             InternetAccessListener(
               onInternetAccessGained: (BuildContext context) => debugPrint(
-                'Internet access gained (logged from InternetAccessListener)',
+                'Internet access gained (logged by InternetAccessListener)',
               ),
               onInternetAccessLost: (BuildContext context) => debugPrint(
-                'Internet access lost (logged from InternetAccessListener)',
+                'Internet access lost (logged by InternetAccessListener)',
               ),
               child: const Text(
                 'This text widget does not rebuild when internet access state changes.',

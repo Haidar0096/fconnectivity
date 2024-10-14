@@ -13,7 +13,6 @@ part 'internet_access_state.dart';
 /// for internet access, emitting the appropriate [InternetAccessState].
 class InternetAccessCubit extends Cubit<InternetAccessState> {
   InternetAccessCubit._() : super(const HasInternetAccess()) {
-    print('InternetAccessCubit initialized');
     _createInternetAccessCheckerTimer(_defaultInternetAccessCheckInterval);
     _registerConnectivityListener();
   }
