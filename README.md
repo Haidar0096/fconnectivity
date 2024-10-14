@@ -2,9 +2,9 @@
 
 A Flutter package that provides utilities for checking internet connectivity status. It allows developers to easily manage and respond to changes in internet access state within their applications.
 
-# Usage
+## Usage
 
-## Listening to internet access state changes
+### Listening to internet access state changes
 
 You can use either the `InternetAccessConsumer` widget or the `InternetAccessListener` class to listen to internet access state changes.
 
@@ -40,7 +40,7 @@ Widget build(BuildContext context) {
 }
 ```
 
-## Configuring the internet access checking process
+### Configuring the internet access checking process
 
 You can configure the internet access checking process by using the `InternetAccessChecker` class.
 
@@ -52,9 +52,13 @@ InternetAccessChecker.instance.triggerInternetAccessCheck();
 
 // Set a new interval for periodic internet access checks.
 InternetAccessChecker.instance.setInternetAccessCheckInterval(Duration(seconds: 10));
+
+// Set the delay for the internet access check after a connectivity change occurs.
+InternetAccessChecker.instance.setPostConnectivityChangeCheckDelay(Duration(seconds: 1));
 ```
 
-## Disposing resources
+### Disposing resources
+
 If you don't want to use the internet access checking anymore, dispose the resources this way:
 
 ```dart
@@ -62,4 +66,14 @@ If you don't want to use the internet access checking anymore, dispose the resou
 InternetAccessChecker.instance.dispose();
 ```
 
-Note: No resources will be used by the package until you start listening to internet access state changes by using one of the listener widgets (`InternetAccessConsumer` or `InternetAccessListener`).
+- You cannot use the package after calling `InternetAccessChecker.instance.dispose();`
+
+### Notes
+
+- No resources will be used by the package until you start listening to internet access state changes by using one of the listener widgets (`InternetAccessConsumer` or `InternetAccessListener`).
+
+## Support Me
+
+If you like my work and would like to support me, consider buying me a coffee:
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/haidarmehsen)

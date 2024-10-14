@@ -12,3 +12,8 @@
 ## 0.1.1
 
 * minor refactor of logs and removal of unnecessary logs.
+
+## 0.2.0
+
+* Updated docs and example.
+* Added option to set delay before checking for internet access after connectivity state changes.

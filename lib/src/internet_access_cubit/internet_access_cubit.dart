@@ -14,7 +14,7 @@ part 'internet_access_state.dart';
 class InternetAccessCubit extends Cubit<InternetAccessState> {
   InternetAccessCubit._() : super(const HasInternetAccess()) {
     _createInternetAccessCheckerTimer(_defaultInternetAccessCheckInterval);
-    _registerConnectivityListener();
+    _registerConnectivityListener(_defaultPostConnectivityChangeCheckInterval);
   }
 
   /// The singleton [InternetAccessCubit] instance.
@@ -24,12 +24,16 @@ class InternetAccessCubit extends Cubit<InternetAccessState> {
   static const Duration _defaultInternetAccessCheckInterval =
       Duration(minutes: 1);
 
+  /// The interval between the connectivity change and the internet access
+  /// check after the change.
+  static const Duration _defaultPostConnectivityChangeCheckInterval =
+      Duration(seconds: 2);
+
   /// Timer that triggers periodic internet access checks.
   Timer? _internetAccessCheckerTimer;
 
   /// Subscription to connectivity changes.
-  late final StreamSubscription<List<ConnectivityResult>>
-      _connectivitySubscription;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
   /// Completer used to handle concurrent internet access checks.
   Completer<bool>? _hasInternetAccessCompleter;
@@ -41,6 +45,13 @@ class InternetAccessCubit extends Cubit<InternetAccessState> {
   void setInternetAccessCheckInterval(Duration duration) {
     _internetAccessCheckerTimer?.cancel();
     _createInternetAccessCheckerTimer(duration);
+  }
+
+  /// Sets the delay that is used after a connectivity change before the
+  /// internet access check is performed.
+  void setPostConnectivityChangeCheckDelay(Duration duration) {
+    _connectivitySubscription?.cancel();
+    _registerConnectivityListener(duration);
   }
 
   /// Manually triggers an internet access check and emits the result.
@@ -63,10 +74,10 @@ class InternetAccessCubit extends Cubit<InternetAccessState> {
   ///
   /// This listener will wait for a short duration before checking the
   /// internet access to allow the network to stabilize.
-  void _registerConnectivityListener() {
+  void _registerConnectivityListener(Duration delay) {
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen(
       (_) async {
-        await Future<void>.delayed(const Duration(seconds: 2));
+        await Future<void>.delayed(delay);
         await _emitInternetAccessCheckResultingState();
       },
     );
@@ -112,7 +123,7 @@ class InternetAccessCubit extends Cubit<InternetAccessState> {
 
   @override
   Future<void> close() {
-    _connectivitySubscription.cancel();
+    _connectivitySubscription?.cancel();
     _internetAccessCheckerTimer?.cancel();
     return super.close();
   }
