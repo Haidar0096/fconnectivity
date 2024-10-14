@@ -8,21 +8,25 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 part 'internet_access_state.dart';
 
 /// Cubit that manages the internet access state of the device.
+///
+/// This cubit listens for connectivity changes and periodically checks
+/// for internet access, emitting the appropriate [InternetAccessState].
 class InternetAccessCubit extends Cubit<InternetAccessState> {
-  /// Creates an [InternetAccessCubit] instance.
-  ///
-  /// Initializes with [HasInternetAccess] state and sets up periodic connection
-  /// checks and connectivity listener.
-  InternetAccessCubit() : super(const HasInternetAccess()) {
-    _setupConnectionCheckerTimer();
-    _setupConnectivityListener();
+  InternetAccessCubit._() : super(const HasInternetAccess()) {
+    print('InternetAccessCubit initialized');
+    _createInternetAccessCheckerTimer(_defaultInternetAccessCheckInterval);
+    _registerConnectivityListener();
   }
 
-  /// The interval between periodic internet connection checks.
-  Duration _connectionCheckInterval = const Duration(minutes: 1);
+  /// The singleton [InternetAccessCubit] instance.
+  static final instance = InternetAccessCubit._();
 
-  /// Timer that triggers periodic internet connection checks.
-  late Timer _connectionCheckerTimer;
+  /// The interval between periodic internet access checks.
+  static const Duration _defaultInternetAccessCheckInterval =
+      Duration(minutes: 1);
+
+  /// Timer that triggers periodic internet access checks.
+  Timer? _internetAccessCheckerTimer;
 
   /// Subscription to connectivity changes.
   late final StreamSubscription<List<ConnectivityResult>>
@@ -31,44 +35,51 @@ class InternetAccessCubit extends Cubit<InternetAccessState> {
   /// Completer used to handle concurrent internet access checks.
   Completer<bool>? _hasInternetAccessCompleter;
 
-  /// Sets a new interval for periodic internet connection checks.
+  /// Sets a new interval for periodic internet access checks.
   ///
   /// Cancels the existing timer and sets up a new one with the provided
   /// [duration].
-  void setConnectionCheckInterval(Duration duration) {
-    _connectionCheckInterval = duration;
-    _connectionCheckerTimer.cancel();
-    _setupConnectionCheckerTimer();
+  void setInternetAccessCheckInterval(Duration duration) {
+    _internetAccessCheckerTimer?.cancel();
+    _createInternetAccessCheckerTimer(duration);
   }
 
   /// Manually triggers an internet access check and emits the result.
-  Future<void> checkInternetAccess() async =>
-      emit(await _getInternetCheckResult());
+  Future<void> triggerInternetAccessCheck() async =>
+      _emitInternetAccessCheckResultingState();
 
-  /// Sets up the periodic timer for internet connection checks.
-  void _setupConnectionCheckerTimer() {
-    _connectionCheckerTimer = createPeriodicTimer(
-      period: _connectionCheckInterval,
-      callback: (timer) async => emit(await _getInternetCheckResult()),
+  /// Sets up the periodic timer for internet access checks.
+  ///
+  /// The timer will call the internet access check immediately and then
+  /// at the specified interval.
+  void _createInternetAccessCheckerTimer(Duration duration) {
+    _internetAccessCheckerTimer = createPeriodicTimer(
+      period: duration,
+      callback: (timer) async => _emitInternetAccessCheckResultingState(),
       fireImmediately: true,
     );
   }
 
   /// Sets up a listener for connectivity changes.
-  void _setupConnectivityListener() {
+  ///
+  /// This listener will wait for a short duration before checking the
+  /// internet access to allow the network to stabilize.
+  void _registerConnectivityListener() {
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen(
-      (connectivityResultList) async {
-        // Add a small delay before checking internet to give the network time
-        // to stabilize
+      (_) async {
         await Future<void>.delayed(const Duration(seconds: 2));
-        emit(await _getInternetCheckResult());
+        await _emitInternetAccessCheckResultingState();
       },
     );
   }
 
+  /// Emits the internet access state based on the result of the internet check.
+  Future<void> _emitInternetAccessCheckResultingState() async =>
+      emit(await _getInternetCheckResultingState());
+
   /// Performs an internet check and returns the appropriate
   /// [InternetAccessState].
-  Future<InternetAccessState> _getInternetCheckResult() async =>
+  Future<InternetAccessState> _getInternetCheckResultingState() async =>
       switch (await _hasInternetAccess()) {
         true => const HasInternetAccess(),
         false => const HasNoInternetAccess(),
@@ -86,10 +97,13 @@ class InternetAccessCubit extends Cubit<InternetAccessState> {
   }
 
   /// Starts the actual internet check process.
+  ///
+  /// This method attempts to determine if there is an active internet
+  /// access and completes the [Completer] with the result.
   Future<void> _startInternetCheck() async {
     try {
-      final hasConnection = await InternetConnection().hasInternetAccess;
-      _hasInternetAccessCompleter!.complete(hasConnection);
+      final hasInternetAccess = await InternetConnection().hasInternetAccess;
+      _hasInternetAccessCompleter!.complete(hasInternetAccess);
     } catch (_) {
       _hasInternetAccessCompleter!.complete(false);
     } finally {
@@ -100,7 +114,7 @@ class InternetAccessCubit extends Cubit<InternetAccessState> {
   @override
   Future<void> close() {
     _connectivitySubscription.cancel();
-    _connectionCheckerTimer.cancel();
+    _internetAccessCheckerTimer?.cancel();
     return super.close();
   }
 }

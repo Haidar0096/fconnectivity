@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
+
 /// Creates and returns a timer that fires periodically.
 Timer createPeriodicTimer({
   required Duration period,
@@ -12,3 +14,6 @@ Timer createPeriodicTimer({
   }
   return timer;
 }
+
+/// A callback that takes a [BuildContext] as an argument and returns nothing.
+typedef VoidContextedCallback = void Function(BuildContext context);

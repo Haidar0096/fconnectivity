@@ -2,5 +2,6 @@
 /// status.
 library fconnectivity;
 
-export 'src/internet_access_cubit/internet_access_cubit.dart';
-export 'src/widgets/internet_access_cubit_listener.dart';
+export 'src/internet_access_checker.dart';
+export 'src/widgets/internet_access_consumer.dart';
+export 'src/widgets/internet_access_listener.dart';

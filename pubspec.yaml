@@ -1,6 +1,6 @@
 name: fconnectivity
 description: Connectivity package that contains useful utilities for checking if device is connected to the internet.
-version: 0.0.1
+version: 0.1.0
 homepage: https://github.com/Haidar0096/fconnectivity
 
 environment:
@@ -15,7 +15,6 @@ dependencies:
   internet_connection_checker_plus: ^2.5.2
 
 dev_dependencies:
-  flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
   very_good_analysis: ^6.0.0

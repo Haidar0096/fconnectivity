@@ -1,3 +1,10 @@
 ## 0.0.1
 
 * Initial release.
+
+## 0.1.0
+
+* Removed usage of Bloc package to make the package agnostic.
+* Added the InternetAccessConsumer, InternetAccessListener classes to listen to internet access state changes.
+* Added InternetAccessChecker for configuring the internet access checking process.
+* Added a way to dispose resources used, by using theInternetAccessChecker class.
