@@ -17,3 +17,7 @@
 
 * Updated docs and example.
 * Added option to set delay before checking for internet access after connectivity state changes.
+
+## 0.3.0
+
+* Added InternetAccessBuilder widget which rebuilds if internet access state changes.

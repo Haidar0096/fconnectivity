@@ -40,6 +40,21 @@ Widget build(BuildContext context) {
 }
 ```
 
+or
+
+```dart
+// This widget will rebuild whenever the internet access state changes.
+@override
+Widget build(BuildContext context) {
+  return InternetAccessBuilder(
+    // this builder will be called when the internet access state changes
+    builder: (context, hasInternetAccess) => Text(
+      'Internet access state: ${hasInternetAccess ? 'Available' : 'Not Available'}',
+    ),
+  );
+}
+```
+
 ### Configuring the internet access checking process
 
 You can configure the internet access checking process by using the `InternetAccessChecker` class.
