@@ -34,6 +34,7 @@ class AppWidget extends StatelessWidget {
                       '\nCurrent state of internet access: '
                       '${hasInternetAccess ? 'Available' : 'Not Available'}',
                       textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 24),
                     ),
                   ),
                 ),
@@ -52,6 +53,7 @@ class AppWidget extends StatelessWidget {
                       'it listens to internet access states, but it does not '
                       'rebuild when internet access state changes.',
                       textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 24),
                     ),
                   ),
                 ),
