@@ -21,3 +21,8 @@
 ## 0.3.0
 
 * Added InternetAccessBuilder widget which rebuilds if internet access state changes.
+
+## 0.4.0
+
+* Added more safety checks on the internal timers and stream subscriptions.
+* Enhanced code documentation and the example app.
