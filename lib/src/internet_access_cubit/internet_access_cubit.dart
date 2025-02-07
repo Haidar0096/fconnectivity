@@ -63,6 +63,7 @@ class InternetAccessCubit extends Cubit<InternetAccessState> {
   /// The timer will call the internet access check immediately and then
   /// at the specified interval.
   void _createInternetAccessCheckerTimer(Duration duration) {
+    _internetAccessCheckerTimer?.cancel();
     _internetAccessCheckerTimer = createPeriodicTimer(
       period: duration,
       callback: (timer) async => _emitInternetAccessCheckResultingState(),
@@ -75,6 +76,7 @@ class InternetAccessCubit extends Cubit<InternetAccessState> {
   /// This listener will wait for a short duration before checking the
   /// internet access to allow the network to stabilize.
   void _registerConnectivityListener(Duration delay) {
+    _connectivitySubscription?.cancel();
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen(
       (_) async {
         await Future<void>.delayed(delay);
