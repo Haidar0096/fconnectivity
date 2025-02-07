@@ -26,3 +26,7 @@
 
 * Added more safety checks on the internal timers and stream subscriptions.
 * Enhanced code documentation and the example app.
+
+## 0.5.0
+
+* Removed some logs from the package.
