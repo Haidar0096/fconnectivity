@@ -1,10 +1,30 @@
 import 'package:fconnectivity/fconnectivity.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(const AppWidget());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Change the interval of internet access check to 2 seconds.
+  InternetAccessChecker.instance.setInternetAccessCheckInterval(
+    const Duration(milliseconds: 2000),
+  );
+  runApp(const AppWidget());
+}
 
-class AppWidget extends StatelessWidget {
+class AppWidget extends StatefulWidget {
   const AppWidget({super.key});
+
+  @override
+  State<AppWidget> createState() => _AppWidgetState();
+}
+
+class _AppWidgetState extends State<AppWidget> {
+  final TextEditingController _intervalController = TextEditingController();
+
+  @override
+  void dispose() {
+    _intervalController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -70,6 +90,25 @@ class AppWidget extends StatelessWidget {
                       style: TextStyle(fontSize: 24),
                     ),
                   ),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: _intervalController,
+                  decoration: const InputDecoration(
+                    labelText: 'Enter the interval in milliseconds',
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    InternetAccessChecker.instance
+                        .setInternetAccessCheckInterval(
+                      Duration(
+                          milliseconds:
+                              int.tryParse(_intervalController.text) ?? 0),
+                    );
+                  },
+                  child: const Text('Change internet access check interval'),
                 ),
               ],
             ),
