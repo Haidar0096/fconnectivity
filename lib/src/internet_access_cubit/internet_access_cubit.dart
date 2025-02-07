@@ -66,10 +66,7 @@ class InternetAccessCubit extends Cubit<InternetAccessState> {
     _internetAccessCheckerTimer?.cancel();
     _internetAccessCheckerTimer = createPeriodicTimer(
       period: duration,
-      callback: (timer) async {
-        print('_internetAccessCheckerTimer callback called at ${DateTime.now()}');
-        return _emitInternetAccessCheckResultingState();
-      },
+      callback: (timer) async => _emitInternetAccessCheckResultingState(),
       fireImmediately: true,
     );
   }
