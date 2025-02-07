@@ -37,7 +37,7 @@ class AppWidget extends StatelessWidget {
                             'This text widget is wrapped with InternetAccessConsumer, so '
                             'it listens to internet access states, and also it '
                             'rebuilds when internet access state changes.'
-                            '\nCurrent state of internet access: ',
+                            '\nCurrent state of internet access:\n',
                         children: [
                           TextSpan(
                             text: hasInternetAccess
