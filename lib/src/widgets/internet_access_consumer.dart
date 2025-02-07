@@ -29,8 +29,8 @@ class InternetAccessConsumer extends StatelessWidget {
 
   /// Builder function that builds the widget based on the internet access
   /// state.
-  /// - [context]: The build context.
-  /// - [hasInternetAccess]: Whether the device has internet access.
+  /// - context: The build context.
+  /// - hasInternetAccess: Whether the device has internet access.
   final Widget Function({
     required BuildContext context,
     required bool hasInternetAccess,
